@@ -117,14 +117,6 @@ Packer Detection     : Unpacked
 - **LIEF**: `pip install lief`
 - **cryptography** *(optional for signatures)*: `pip install cryptography`
 
----
-
-## 🤝 Contributing
-
-Contributions welcome! Please:
-1. Fork the repo
-2. Create a feature branch
-3. Submit a Pull Request
 
 ---
 
