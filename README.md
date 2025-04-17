@@ -27,10 +27,12 @@ Download the script and install dependencies:
 
 ```bash
 # Download the latest version
-curl -O https://raw.githubusercontent.com/anpa1200/Malware_analysis/main/Basic_inf_gathering.py
+# Download the latest version
+curl -O https://raw.githubusercontent.com/anpa1200/Basic-File-Information-Gathering-Script/main/Basic_inf_gathering.py
 
 # (Optional) Clone the repository to get examples and LICENSE
-git clone https://github.com/anpa1200/Malware_analysis.git && cd Malware_analysis
+# (Optional) Clone the repository to get examples and LICENSE
+git clone https://github.com/anpa1200/Basic-File-Information-Gathering-Script.git && cd Basic-File-Information-Gathering-Script
 
 # Create and activate virtual environment (recommended)
 python3 -m venv venv
