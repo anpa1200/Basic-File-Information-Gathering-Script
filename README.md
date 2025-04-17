@@ -1,206 +1,132 @@
-# Basic-File-Information-Gathering-Script
-This repository contains a versatile Python script, Basic_inf_gathering.py, designed to automate the extraction of critical metadata and characteristics from arbitrary files. It is particularly valuable for malware analysts, digital forensics investigators, and SOC engineers who need to rapidly triage files for suspicious or malicious behavior.
+# Basic File Information Gathering Script 🚀
 
+[![Python Version](https://img.shields.io/badge/python-3.7%2B-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![LIEF](https://img.shields.io/badge/LIEF-Parser-orange.svg)](https://lief.quarkslab.com/)
 
-Table of Contents
+A versatile Python tool to extract comprehensive metadata and characteristics from files. Perfect for **malware analysts**, **digital forensics investigators**, and **SOC engineers**.
 
-Features
+---
 
-Installation
+## 🔍 Features
 
-Usage
+- **Cryptographic Hashes**: MD5, SHA-1, SHA-256
+- **Entropy Analysis**: Shannon entropy to detect packing/encryption
+- **Permissions**: Human-readable UNIX file permissions
+- **PE Metadata**: Compilation timestamp, compiler/runtime, import hash, header offset, entry point
+- **Magic Number Detection**: Recognize 50+ common file types (PDF, PNG, ZIP, EXE, ELF, etc.)
+- **Digital Signatures**: Parse and report certificate details (subject, issuer, validity)
+- **Packer Heuristics**: Section entropy and name-based detection
+- **Clean Output**: ANSI‑free, well‑aligned table for CLI
 
-Function Reference
+---
 
-calculate_hash
+## 📦 Installation
 
-calculate_entropy
+Download the script and install dependencies:
 
-get_file_permissions
-
-get_pe_timestamp
-
-detect_compiler_and_language
-
-get_magic_number
-
-check_filetype_from_magic
-
-check_digital_signature
-
-calculate_imphash
-
-get_pe_header_offset
-
-get_entry_point
-
-detect_packing
-
-print_beautiful
-
-get_file_info
-
-Examples
-
-Dependencies
-
-Contributing
-
-License
-
-Features
-
-Hashes: MD5, SHA-1, SHA-256
-
-Entropy Analysis: Shannon entropy to detect packing/encryption
-
-File Permissions: Human-readable UNIX permissions
-
-PE Metadata: Timestamp, compiler/linker, import hash, header offset, entry point
-
-Magic Numbers: Identify file types from headers using common signatures (50+ types)
-
-Digital Signatures: Extract and report certificate details (subject, issuer, validity)
-
-Packer Detection: Heuristics on section entropy and names
-
-Formatted Output: Neatly prints a table of all collected information
-
-Installation
-
-Download the script:
-
+```bash
+# Download the latest version
 curl -O https://raw.githubusercontent.com/anpa1200/Malware_analysis/main/Basic_inf_gathering.py
 
-Alternatively, download it via your browser from:
-https://github.com/anpa1200/Malware_analysis/blob/main/Basic_inf_gathering.py
+# (Optional) Clone the repository to get examples and LICENSE
+git clone https://github.com/anpa1200/Malware_analysis.git && cd Malware_analysis
 
-Create and activate a Python virtual environment (recommended):
-
+# Create and activate virtual environment (recommended)
 python3 -m venv venv
 source venv/bin/activate
 
-Install dependencies:
-
-pip install -r requirements.txt
-
-If you plan to parse and validate digital signatures, ensure cryptography is installed:
-
+# Install required packages
+pip install lief
+# For digital signature parsing
 pip install cryptography
+```
 
-Usage
+---
 
-python Basic_inf_gathering.py <path_to_file>
+## 🚀 Usage
 
-<path_to_file>: Path to the target file you wish to analyze.
+```bash
+python3 Basic_inf_gathering.py <path_to_file>
+```
 
-The script will print a comprehensive report to STDOUT.
+- `<path_to_file>`: Local path to the file you wish to analyze.
+- Output: Detailed table printed to **stdout**.
 
-Function Reference
+---
 
-calculate_hash(file_path, hash_func)
+## 📖 Function Reference
 
-Calculates the cryptographic hash of the file at file_path using the provided hashing constructor (e.g., hashlib.md5). Reads in chunks for memory efficiency.
+| Function                            | Description                                                       |
+| ----------------------------------- | ----------------------------------------------------------------- |
+| `calculate_hash(file, hash_func)`   | Compute file hash (MD5/SHA-1/SHA-256) in 4KB chunks.             |
+| `calculate_entropy(file)`           | Shannon entropy calculation (detects high entropy).               |
+| `get_file_permissions(file)`        | UNIX-style human-readable permissions.                            |
+| `get_pe_timestamp(file)`            | Extract and validate PE compile timestamp via LIEF.               |
+| `detect_compiler_and_language(file)`| Infer compiler/runtime from imports and section names.            |
+| `get_magic_number(file, n)`         | Read first `n` bytes and return hex string.                       |
+| `check_filetype_from_magic(file)`   | File type lookup against 50+ magic signatures.                    |
+| `check_digital_signature(file)`     | Parse PE certificates (subject, issuer, validity).                |
+| `calculate_imphash(file)`           | Compute PE imphash (import hash) for malware triage.             |
+| `get_pe_header_offset(file)`        | Read DOS header `0x3C` pointer to PE header.                      |
+| `get_entry_point(file)`             | Retrieve RVA & VA of entry point from Optional Header.            |
+| `detect_packing(file)`              | Packer detection via entropy & name heuristics.                   |
+| `print_beautiful(info)`             | Print formatted table of collected info.                         |
+| `get_file_info(file)`               | Master function that orchestrates all analyses.                   |
 
-calculate_entropy(file_path)
+---
 
-Computes the Shannon entropy of the file to identify potential packing or encryption (high entropy > 7.5).
+## 🛠️ Examples
 
-get_file_permissions(file_path)
+```bash
+$ python3 Basic_inf_gathering.py samples/malicious.exe
 
-Retrieves UNIX-style permissions in a human-readable string (e.g., -rwxr-xr--).
+================================================================================
+                         📄 FILE INFORMATION SUMMARY 📄                             
+================================================================================
+File Name            : malicious.exe
+File Path            : /home/user/samples/malicious.exe
+Import Hash          : abcdef1234567890abcdef1234567890
+MD5                  : 0123456789abcdef0123456789abcdef
+SHA-1                : fedcba9876543210fedcba9876543210fedcba98
+SHA-256              : ...
+File Size            : 1.23 MB
+Magic Number         : 4D5A9000
+File Type            : Windows Executable (EXE)
+Entropy              : 6.12 (✅ Normal)
+Permissions          : -rwxr--r--
+PE Timestamp         : 2020-05-10 12:34:56 UTC (✅ Legit)
+Compiler & Language  : MSVC (Microsoft Visual C++)
+Digital Signature    :
+    • Subject Org.: Example Corp
+    • Issuer Org. : Example CA
+    • Validity    : 2020-01-01 → 2022-01-01 (Expired)
+PE Header Offset     : 128 (0x80)
+Entry Point          : RVA: 0x1200, VA: 0x401200
+Packer Detection     : Unpacked
+================================================================================
+```
 
-get_pe_timestamp(file_path)
+---
 
-Parses the PE header (using LIEF) to extract the compilation timestamp. Flags suspicious dates outside a plausible range as possibly faked.
+## 🔗 Dependencies
 
-detect_compiler_and_language(file_path)
+- **Python** 3.7+
+- **LIEF**: `pip install lief`
+- **cryptography** *(optional for signatures)*: `pip install cryptography`
 
-Identifies likely compiler/runtime by inspecting import tables and section names (e.g., MSVC, GCC, Go, Rust).
+---
 
-get_magic_number(file_path, num_bytes=4)
+## 🤝 Contributing
 
-Reads the first num_bytes and returns their hex representation. Useful for quick fingerprinting.
+Contributions welcome! Please:
+1. Fork the repo
+2. Create a feature branch
+3. Submit a Pull Request
 
-check_filetype_from_magic(file_path)
+---
 
-Matches the file header against a dictionary of 50+ well-known magic signatures to infer file type (PDF, PNG, ZIP, PE, ELF, etc.).
+## 📜 License
 
-check_digital_signature(file_path)
-
-Uses LIEF to detect embedded PE signatures. Parses certificates (via cryptography) to report subject/issuer organizations, validity dates, and self-signed status.
-
-calculate_imphash(file_path)
-
-Computes the “Import Hash” (imphash) of a PE by concatenating imported DLLs and functions and hashing the string—common in malware triage.
-
-get_pe_header_offset(file_path)
-
-Reads the DOS header field at offset 0x3C to locate the PE header offset.
-
-get_entry_point(file_path)
-
-Extracts the RVA and VA of the executable entry point from the Optional Header.
-
-detect_packing(file_path)
-
-Applies multiple heuristics (section entropy, names, average entropy) to guess if a PE is packed.
-
-print_beautiful(info)
-
-Formats and prints the collected information dictionary as a clean table, preserving multiline fields.
-
-get_file_info(file_path)
-
-Orchestrates all above functions, creates a summary dictionary, and invokes print_beautiful.
-
-Examples
-
-$ python Basic_inf_gathering.py samples/malicious.exe
-====================================================================================================
-                                         FILE INFORMATION                                          
-====================================================================================================
-File Name           : malicious.exe                                                           
-File Path           : /home/user/samples/malicious.exe                                         
-Import Hash         : abcdef1234567890abcdef1234567890                                           
-MD5                 : 0123456789abcdef0123456789abcdef                                           
-SHA-1               : fedcba9876543210fedcba9876543210fedcba98                                   
-SHA-256             : ...                                                                      
-File Size           : 1.23 MB                                                                 
-Magic Number        : 4D5A9000                                                              
-File Type           : Windows Executable (Extended signature)                                 
-Entropy             : 6.12 (✅ Normal)                                                       
-Permissions         : -rwxr--r--                                                           
-PE Timestamp        : 2020-05-10 12:34:56 (✅ Legit)                                      
-Compiler & Language : MSVC (Microsoft Visual C++) (Language: )                               
-Digital Signature   :                                                                 
-    Certificate 1:                                                                  
-      Subject Org.     : Example Corp                                                     
-      Issuer Org.      : Example CA                                                       
-      Validity         : 2020-01-01 to 2022-01-01 (Expired or not yet valid)                
-      Self-signed      : No                                                               
-PE Header Offset    : 128 (0x80)                                                           
-Entry Point         : RVA: 0x1200, VA: 0x401200                                            
-Packer              : Unpacked                                                            
-====================================================================================================
-
-Dependencies
-
-Python 3.7+
-
-LIEF for PE parsing
-
-cryptography (optional, for detailed certificate parsing)
-
-Install all via:
-
-pip install lief cryptography
-
-Contributing
-
-Feel free to open issues or pull requests for additional file-type signatures, heuristics, or usability improvements.
-
-License
-
-This project is licensed under the MIT License. See LICENSE for details.
+Distributed under the **MIT License**. See [LICENSE](LICENSE) for details.
 
