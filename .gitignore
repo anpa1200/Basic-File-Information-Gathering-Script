@@ -1,0 +1,40 @@
+# API key and secrets
+.abuse_ch_key
+.env
+*.pem
+
+# Downloaded samples and reports
+malware_samples/
+
+# Virtual env
+venv/
+.venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Temp and local
+*.tmp
+*.temp
+*.log
+.DS_Store
+Thumbs.db
+
+# Nested clone or copy of this repo
+Basic-File-Information-Gathering-Script/

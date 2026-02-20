@@ -1,0 +1,18 @@
+# Core (required)
+lief>=0.14.0
+
+# Digital signature parsing
+cryptography>=41.0.0
+
+# Optional: fuzzy hashing (malware similarity / clustering)
+# pip install ssdeep  # ssdeep
+# pip install py-tlsh  # tlsh
+
+# Optional: YARA rule scanning
+# pip install yara-python
+
+# Optional: OLE/compound document listing (MS Office, etc.)
+# pip install olefile
+
+# For download_malware_sample.py (real malware from MalwareBazaar)
+# pip install requests pyzipper

@@ -1,126 +1,196 @@
-# Basic File Information Gathering Script 🚀
+# Basic File Information Gathering Script
 
-[![Python Version](https://img.shields.io/badge/python-3.7%2B-blue.svg)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)
 [![LIEF](https://img.shields.io/badge/LIEF-Parser-orange.svg)](https://lief.quarkslab.com/)
 
-A versatile Python tool to extract comprehensive metadata and characteristics from files. Perfect for **malware analysts**, **digital forensics investigators**, and **SOC engineers**.
+A versatile Python tool to extract comprehensive metadata and characteristics from files. For **malware analysts**, **digital forensics**, and **SOC engineers**.
 
 ---
 
-## 🔍 Features
+## Two interfaces
 
-- **Cryptographic Hashes**: MD5, SHA-1, SHA-256
-- **Entropy Analysis**: Shannon entropy to detect packing/encryption
-- **Permissions**: Human-readable UNIX file permissions
-- **PE Metadata**: Compilation timestamp, compiler/runtime, import hash, header offset, entry point
-- **Magic Number Detection**: Recognize 50+ common file types (PDF, PNG, ZIP, EXE, ELF, etc.)
-- **Digital Signatures**: Parse and report certificate details (subject, issuer, validity)
-- **Packer Heuristics**: Section entropy and name-based detection
-- **Clean Output**: ANSI‑free, well‑aligned table for CLI
+| Script | Use case |
+|--------|----------|
+| **`fileinfo.py`** | **Recommended.** Batch mode, JSON/CSV, PE/ELF/Mach-O, strings, optional YARA/ssdeep/tlsh. |
+| **`Basic_inf_gathering.py`** | Single-file, human-readable table only (original behavior). |
 
 ---
 
-## 📦 Installation
+## fileinfo.py — robust & powerful
 
-Download the script and install dependencies:
+### Features
+
+- **Hashes**: MD5, SHA-1, SHA-256, SHA-384, SHA-512 (single pass); optional **ssdeep** and **tlsh** when installed.
+- **Formats**: **PE** (Rich header, overlay, resources, signature, packing), **ELF** (entry, interpreter, sections/segments), **Mach-O** (entry, commands).
+- **Magic numbers**: 60+ file types (executables, archives, documents, media).
+- **Strings**: ASCII and UTF-16 LE extraction with configurable minimum length.
+- **Output**: Human-readable table, **JSON**, or **CSV**; optional output file.
+- **Batch**: Multiple files and/or **recursive directory** (`-r`).
+- **Optional YARA**: Rule scanning when `yara-python` and a rules file are provided.
+- **Full static analysis** (`--full`): Maximum metadata **without decompilation or code analysis**:
+  - **Byte-level**: null ratio, printable ratio, byte frequency, longest null run.
+  - **Entropy map**: per-block entropy to find packed/encrypted regions.
+  - **Head/tail hex dump**: first and last bytes for structure inspection.
+  - **String patterns**: URLs, IPv4, emails, Windows/Unix paths, registry keys (from raw bytes).
+  - **PE deep**: machine type, subsystem, DLL characteristics (ASLR, DEP, etc.), section table (name, size, entropy), full import/export lists, exphash, relocations, TLS callbacks, delay imports, Rich header, resource types, version info (FileVersion, CompanyName, etc.).
+  - **ELF deep**: class, machine, sections/segments, dynamic (NEEDED, RPATH, RUNPATH), exported/imported symbols, notes.
+  - **Mach-O deep**: CPU type, file type, dylibs, segments, UUID.
+  - **Containers**: ZIP file listing (names, sizes); OLE stream listing (optional `olefile`).
+
+### Installation
 
 ```bash
-# Download the latest version
-# Download the latest version
-curl -O https://raw.githubusercontent.com/anpa1200/Basic-File-Information-Gathering-Script/main/Basic_inf_gathering.py
-
-# (Optional) Clone the repository to get examples and LICENSE
-# (Optional) Clone the repository to get examples and LICENSE
-git clone https://github.com/anpa1200/Basic-File-Information-Gathering-Script.git && cd Basic-File-Information-Gathering-Script
-
-# Create and activate virtual environment (recommended)
+git clone https://github.com/anpa1200/Basic-File-Information-Gathering-Script.git
+cd Basic-File-Information-Gathering-Script
 python3 -m venv venv
-source venv/bin/activate
-
-# Install required packages
-pip install lief
-# For digital signature parsing
-pip install cryptography
+source venv/bin/activate   # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+# Optional: pip install ssdeep py-tlsh yara-python
+# For real malware download + analysis: pip install requests pyzipper
 ```
+
+### Usage
+
+```bash
+# Single file (table)
+python3 fileinfo.py /path/to/file.exe
+
+# Multiple files
+python3 fileinfo.py file1.exe file2.bin
+
+# Recursive directory
+python3 fileinfo.py -r /path/to/samples/
+
+# JSON output
+python3 fileinfo.py --json /path/to/file.exe
+
+# CSV (for spreadsheets / automation)
+python3 fileinfo.py --csv -r ./samples/ -o report.csv
+
+# Extra hashes + strings
+python3 fileinfo.py --hashes md5,sha1,sha256,sha512 --strings --min-str-len 8 file.exe
+
+# YARA scan
+python3 fileinfo.py --yara /path/to/rules.yar file.exe
+
+# Skip specific binary analysis
+python3 fileinfo.py --no-elf --no-macho /path/to/pe_only/
+
+# Full static analysis (max metadata, no decompilation)
+python3 fileinfo.py --full /path/to/sample.exe
+python3 fileinfo.py --full --json sample.exe -o full_report.json
+```
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `paths` | One or more files or directories. |
+| `-r`, `--recursive` | Recurse into directories. |
+| `--json` | Output JSON. |
+| `--csv` | Output CSV (one row per file). |
+| `-o`, `--output` | Write output to file. |
+| `--hashes` | Comma-separated: md5, sha1, sha256, sha384, sha512. |
+| `--no-fuzzy` | Disable ssdeep/tlsh. |
+| `--strings` | Extract ASCII + Unicode strings. |
+| `--min-str-len` | Minimum string length (default 6). |
+| `--no-pe` / `--no-elf` / `--no-macho` | Skip that format’s analysis. |
+| `--yara` | Path to YARA rules file. |
+| `--full` | Full static analysis: byte stats, entropy map, head/tail hex, string patterns (URLs, IPs, paths, registry), PE/ELF/Mach-O deep (sections, imports/exports, relocs, version info, etc.), ZIP/OLE listing. No decompilation. |
+| `-v`, `--verbose` | Verbose errors to stderr. |
 
 ---
 
-## 🚀 Usage
+## Basic_inf_gathering.py — simple single-file
+
+### Usage
 
 ```bash
 python3 Basic_inf_gathering.py <path_to_file>
 ```
 
-- `<path_to_file>`: Local path to the file you wish to analyze.
-- Output: Detailed table printed to **stdout**.
+- Single file only.
+- Output: detailed table to stdout (PE timestamp, imphash, hashes, entropy, permissions, magic, file type, digital signature, entry point, packer).
+
+### Dependencies
+
+- **Python** 3.7+
+- **LIEF**: `pip install lief`
+- **cryptography** (optional, for PE certificate details): `pip install cryptography`
 
 ---
 
-## 📖 Function Reference
-
-| Function                            | Description                                                       |
-| ----------------------------------- | ----------------------------------------------------------------- |
-| `calculate_hash(file, hash_func)`   | Compute file hash (MD5/SHA-1/SHA-256) in 4KB chunks.             |
-| `calculate_entropy(file)`           | Shannon entropy calculation (detects high entropy).               |
-| `get_file_permissions(file)`        | UNIX-style human-readable permissions.                            |
-| `get_pe_timestamp(file)`            | Extract and validate PE compile timestamp via LIEF.               |
-| `detect_compiler_and_language(file)`| Infer compiler/runtime from imports and section names.            |
-| `get_magic_number(file, n)`         | Read first `n` bytes and return hex string.                       |
-| `check_filetype_from_magic(file)`   | File type lookup against 50+ magic signatures.                    |
-| `check_digital_signature(file)`     | Parse PE certificates (subject, issuer, validity).                |
-| `calculate_imphash(file)`           | Compute PE imphash (import hash) for malware triage.             |
-| `get_pe_header_offset(file)`        | Read DOS header `0x3C` pointer to PE header.                      |
-| `get_entry_point(file)`             | Retrieve RVA & VA of entry point from Optional Header.            |
-| `detect_packing(file)`              | Packer detection via entropy & name heuristics.                   |
-| `print_beautiful(info)`             | Print formatted table of collected info.                         |
-| `get_file_info(file)`               | Master function that orchestrates all analyses.                   |
-
----
-
-## 🛠️ Examples
+## Examples (fileinfo.py)
 
 ```bash
-$ python3 Basic_inf_gathering.py samples/malicious.exe
+# Table output for one PE
+$ python3 fileinfo.py sample.exe
 
-================================================================================
-                         📄 FILE INFORMATION SUMMARY 📄                             
-================================================================================
-File Name            : malicious.exe
-File Path            : /home/user/samples/malicious.exe
-Import Hash          : abcdef1234567890abcdef1234567890
-MD5                  : 0123456789abcdef0123456789abcdef
-SHA-1                : fedcba9876543210fedcba9876543210fedcba98
-SHA-256              : ...
-File Size            : 1.23 MB
-Magic Number         : 4D5A9000
-File Type            : Windows Executable (EXE)
-Entropy              : 6.12 (✅ Normal)
-Permissions          : -rwxr--r--
-PE Timestamp         : 2020-05-10 12:34:56 UTC (✅ Legit)
-Compiler & Language  : MSVC (Microsoft Visual C++)
-Digital Signature    :
-    • Subject Org.: Example Corp
-    • Issuer Org. : Example CA
-    • Validity    : 2020-01-01 → 2022-01-01 (Expired)
-PE Header Offset     : 128 (0x80)
-Entry Point          : RVA: 0x1200, VA: 0x401200
-Packer Detection     : Unpacked
-================================================================================
+# JSON for automation
+$ python3 fileinfo.py --json sample.exe -o report.json
+
+# Batch CSV
+$ python3 fileinfo.py --csv -r ./malware_samples/ -o summary.csv
+
+# With strings and YARA
+$ python3 fileinfo.py --strings --yara rules.yar sample.exe
+
+# Maximum static info (no decompilation)
+$ python3 fileinfo.py --full sample.exe
+$ python3 fileinfo.py --full --json sample.exe -o full.json
 ```
 
 ---
 
-## 🔗 Dependencies
+## Testing with real malware (from the wild)
 
-- **Python** 3.7+
-- **LIEF**: `pip install lief`
-- **cryptography** *(optional for signatures)*: `pip install cryptography`
+To run the tool on **real Windows PE malware** and compare with MalwareBazaar metadata:
 
+1. **Get a free API key** from [abuse.ch Authentication](https://auth.abuse.ch/) (required for MalwareBazaar).
+2. **Install deps**: `pip install requests pyzipper`
+3. **Download a sample and run full analysis**:
+
+```bash
+export ABUSE_CH_AUTH_KEY='your-key-here'
+
+# Download one recent sample (API picks from recent detections) and run --full analysis
+python3 download_malware_sample.py
+
+# Download by known SHA256 (e.g. from a public report)
+python3 download_malware_sample.py 9FDEA40A9872A77335AE3B733A50F4D1E9F8EFF193AE84E36FB7E5802C481F72
+
+# Download by tag (e.g. Emotet, TrickBot) then analyze
+python3 download_malware_sample.py --tag Emotet --limit 1
+```
+
+Output (per sample) under `malware_samples/<sha256>/`:
+
+- Extracted binary (or `sample.bin` if not zipped)
+- **`our_analysis.json`** — full static report from `fileinfo.py --full --json`
+- **`bazaar_info.json`** — MalwareBazaar metadata (signature, imphash, ssdeep, tags, etc.) for comparison
+
+Compare hashes, imphash, file type, and PE/string findings between `our_analysis.json` and `bazaar_info.json` (and any public report you have for that hash).
 
 ---
 
-## 📜 License
+## Project layout
 
-Distributed under the **MIT License**. See [LICENSE](LICENSE) for details.
+- **`fileinfo.py`** — Main CLI: hashes, PE/ELF/Mach-O, strings, YARA, `--full` static.
+- **`static_analysis.py`** — Deep static analysis module (byte stats, entropy map, PE/ELF/Mach-O deep, string patterns, ZIP/OLE). Used when `--full` is set.
+- **`download_malware_sample.py`** — Download real Windows PE samples from MalwareBazaar (abuse.ch), run full analysis, save Bazaar metadata for comparison.
+- **`Basic_inf_gathering.py`** — Legacy single-file table script.
 
+## Requirements
+
+- **Python** 3.8+ (for `fileinfo.py`), 3.7+ (for `Basic_inf_gathering.py`)
+- **LIEF**: required for PE/ELF/Mach-O parsing
+- **cryptography**: optional, for PE digital signature details
+- **ssdeep** / **py-tlsh**: optional, for fuzzy hashing
+- **yara-python**: optional, for YARA scanning
+- **olefile**: optional, for OLE/compound document stream listing in `--full`
+
+---
+
+## License
+
+See [LICENSE](LICENSE) for details.
