@@ -7,6 +7,14 @@ A versatile Python tool to extract comprehensive metadata and characteristics fr
 
 ---
 
+## 📖 Guide: how to use (with pictures)
+
+**→ [One Tool to Rule Them All: File Metadata & Static Analysis for Malware Analysts and SOC Teams](https://medium.com/@1200km/one-tool-to-rule-them-all-file-metadata-static-analysis-for-malware-analysts-and-soc-teams-c6dba1f5b7de)** (Medium article)
+
+Step-by-step guide with screenshots: installation, `fileinfo.py` vs `Basic_inf_gathering.py`, hashes, strings, YARA, full static analysis, and MalwareBazaar workflow.
+
+---
+
 ## Two interfaces
 
 | Script | Use case |
@@ -42,12 +50,46 @@ A versatile Python tool to extract comprehensive metadata and characteristics fr
 ```bash
 git clone https://github.com/anpa1200/Basic-File-Information-Gathering-Script.git
 cd Basic-File-Information-Gathering-Script
+# On Debian/Ubuntu, ensure venv support: sudo apt install python3-venv
 python3 -m venv venv
 source venv/bin/activate   # Windows: venv\Scripts\activate
-pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 # Optional: pip install ssdeep py-tlsh yara-python
 # For real malware download + analysis: pip install requests pyzipper
 ```
+
+### Troubleshooting installation
+
+- **`ModuleNotFoundError: No module named 'lief'`** — Install dependencies inside the project directory with the venv **activated** (see below). Run the script with the same Python that has the packages (e.g. `python3 Basic_inf_gathering.py file.exe` after activating the venv).
+
+- **`venv/bin/activate: No such file or directory`** or **`venv/bin/python3: No such file or directory`** — The venv was not fully created. On Debian/Ubuntu you need the `python3-venv` package:
+
+  ```bash
+  sudo apt update
+  sudo apt install python3-venv
+  rm -rf venv
+  python3 -m venv venv
+  source venv/bin/activate
+  python3 -m pip install -r requirements.txt
+  ```
+
+  Then run scripts with `python3 fileinfo.py ...` or `python3 Basic_inf_gathering.py ...` while the venv is active.
+
+- **`venv/bin/pip: cannot execute: required file not found`** — The virtual environment is broken (e.g. Python path changed). Recreate it from the **project root** (where `requirements.txt` lives), and install the `python3-venv` package if needed (see above). Then:
+
+  ```bash
+  rm -rf venv
+  python3 -m venv venv
+  source venv/bin/activate
+  python3 -m pip install -r requirements.txt
+  ```
+
+- **No venv / prefer system install** — You can install dependencies for your user with the system Python (no venv):
+
+  ```bash
+  python3 -m pip install --user -r requirements.txt
+  python3 fileinfo.py /path/to/file.exe
+  ```
 
 ### Usage
 

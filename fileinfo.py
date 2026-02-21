@@ -620,7 +620,7 @@ def print_text_report(info: dict[str, Any], multiline_keys: set | None = None) -
             else:
                 print(f"    {v}")
         elif k == "strings_sample":
-            print(f"  strings_sample ({len(info.get('strings_count', 0))} total):")
+            print(f"  strings_sample ({info.get('strings_count', 0)} total):")
             for s in (v or [])[:30]:
                 print(f"    {repr(s)[:70]}")
             if len(v or []) > 30:

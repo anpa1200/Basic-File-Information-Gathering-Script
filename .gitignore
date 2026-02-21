@@ -36,5 +36,10 @@ build/
 .DS_Store
 Thumbs.db
 
+# Local scan outputs (do not commit)
+report.json
+report.csv
+full_report.json
+
 # Nested clone or copy of this repo
 Basic-File-Information-Gathering-Script/
