@@ -1,45 +1,91 @@
-# API key and secrets
+# =============================================================================
+# Basic-File-Information-Gathering-Script — production .gitignore
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Secrets and credentials (never commit)
+# -----------------------------------------------------------------------------
 .abuse_ch_key
 .env
+.env.*
+!.env.example
 *.pem
+*.key
+secrets/
 
-# Downloaded samples and reports
+# -----------------------------------------------------------------------------
+# Samples and analysis outputs (local / downloaded)
+# -----------------------------------------------------------------------------
 malware_samples/
+samples/
+samples_step*/
+*_samples/
+report.json
+report.csv
+full_report.json
+*_report.json
+our_analysis.json
+bazaar_info.json
 
-# Virtual env
+# -----------------------------------------------------------------------------
+# Virtual environments
+# -----------------------------------------------------------------------------
 venv/
 .venv/
 env/
+.env/
 
+# -----------------------------------------------------------------------------
 # Python
+# -----------------------------------------------------------------------------
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
+*.egg
 *.egg-info/
 .eggs/
 dist/
 build/
+*.manifest
+*.spec
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
 
-# IDE / editor
+# -----------------------------------------------------------------------------
+# IDE and editors
+# -----------------------------------------------------------------------------
 .idea/
 .vscode/
 *.swp
 *.swo
 *~
+.project
+.pydevproject
+.settings/
 
-# Temp and local
+# -----------------------------------------------------------------------------
+# Cursor / AI context and local state (do not commit)
+# -----------------------------------------------------------------------------
+.cursor/
+*.jsonl
+agent-transcripts/
+
+# -----------------------------------------------------------------------------
+# OS and misc
+# -----------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
 *.tmp
 *.temp
 *.log
-.DS_Store
-Thumbs.db
+*.bak
 
-# Local scan outputs (do not commit)
-report.json
-report.csv
-full_report.json
-
+# -----------------------------------------------------------------------------
 # Nested clone or copy of this repo
+# -----------------------------------------------------------------------------
 Basic-File-Information-Gathering-Script/
