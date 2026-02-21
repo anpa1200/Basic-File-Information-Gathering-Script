@@ -35,6 +35,16 @@ def calculate_entropy(file_path):
                    for count in byte_counts.values() if count > 0)
     return entropy
 
+def entropy_severity(entropy):
+    """Return human-readable severity for entropy (0–8 scale)."""
+    if entropy >= 7.0:
+        return "⚠️ High (Possible Packing/Encryption)"
+    if entropy >= 6.5:
+        return "⬆️ Elevated"
+    if entropy >= 4.5:
+        return "✅ Normal"
+    return "Low"
+
 def get_file_permissions(file_path):
     """Retrieve file permissions in human-readable format."""
     mode = os.stat(file_path).st_mode
@@ -382,7 +392,7 @@ def get_file_info(file_path):
         pe_header_offset_str = f"{pe_header_offset} (0x{pe_header_offset:X})"
     else:
         pe_header_offset_str = pe_header_offset
-    entropy_status = "⚠️ High (Possible Packing/Encryption)" if entropy > 7.5 else "✅ Normal"
+    entropy_status = entropy_severity(entropy)
     
     # Construct info dictionary with Import Hash above the file hashes
     info = {

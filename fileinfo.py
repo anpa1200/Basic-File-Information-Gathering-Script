@@ -171,6 +171,17 @@ def calculate_entropy(file_path: str) -> float:
     return -sum((c / n) * math.log2(c / n) for c in counts if c)
 
 
+def entropy_severity(entropy: float) -> str:
+    """Return human-readable severity for entropy (0–8 scale)."""
+    if entropy >= 7.0:
+        return "High (possible packing/encryption)"
+    if entropy >= 6.5:
+        return "Elevated"
+    if entropy >= 4.5:
+        return "Normal"
+    return "Low"
+
+
 def get_file_permissions(file_path: str) -> str:
     return stat.filemode(os.stat(file_path).st_mode)
 
@@ -514,7 +525,7 @@ def gather_file_info(
         "magic_number": magic_hex,
         "file_type": file_type,
         "entropy": round(entropy, 4),
-        "entropy_note": "High (possible packing)" if entropy > 7.5 else "Normal",
+        "entropy_note": entropy_severity(entropy),
         "permissions": get_file_permissions(file_path),
         "hashes": hashes,
     }
