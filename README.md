@@ -233,6 +233,19 @@ Compare hashes, imphash, file type, and PE/string findings between `our_analysis
 
 ---
 
+## Related repositories & articles
+
+| Resource | Link |
+|----------|------|
+| **Basic-File-Information-Gathering-Script (this repo)** | [GitHub](https://github.com/anpa1200/Basic-File-Information-Gathering-Script) · [Medium: File Metadata & Static Analysis](https://medium.com/@1200km/one-tool-to-rule-them-all-file-metadata-static-analysis-for-malware-analysts-and-soc-teams-c6dba1f5b7de) |
+| **Static-malware-Analysis-Orchestrator** | [GitHub](https://github.com/anpa1200/Static-malware-Analysis-Orchestrator) — one-command pipeline (triage, strings, PE imports, unpack) · [Medium: Full workflow](https://medium.com/@1200km/basic-static-malware-analysis-from-triage-to-unpacking-explained-and-automated-9442ef3b11b8) |
+| **String-Analyzer** | [GitHub](https://github.com/anpa1200/String-Analyzer-) · [Medium: String Analyzer Guide](https://medium.com/@1200km/a-practical-guide-to-string-analyzer-extract-and-analyze-strings-from-binaries-without-the-875dc74e4868) |
+| **PE-Import-Analyzer** | [GitHub](https://github.com/anpa1200/PE-Import-Analyzer) · [Medium: PE Import Analyzer Guide](https://medium.com/@1200km/pe-import-analyzer-a-practical-guide-for-malware-analysts-and-reverse-engineers-29b8b98aeaf3) |
+| **Unpacker** | [GitHub](https://github.com/anpa1200/Unpacker) · [Medium: Unpacker Guide](https://medium.com/@1200km/unpacker-a-practical-guide-to-modular-malware-packer-detection-and-unpacking-cf8ba924f25b) |
+| **Author** | [Medium @1200km](https://medium.com/@1200km) |
+
+---
+
 ## License
 
 See [LICENSE](LICENSE) for details.
