@@ -1,5 +1,22 @@
 # Basic File Information Gathering Script
 
+File triage for malware analysts and CTI engineers: hashes, metadata, strings, entropy, YARA context, and static characteristics that become IOC enrichment and detection leads.
+
+## CTI Use
+
+Use this as the first-pass file triage layer before deeper reverse engineering. The output helps answer: what is the file, what indicators does it expose, does it look packed or unusual, and what should be pivoted or hunted next?
+
+## Defender Outputs
+
+| Output | Use |
+|---|---|
+| Hashes | IOC tracking and enrichment |
+| Strings | URLs, paths, registry keys, suspicious terms |
+| Entropy and byte stats | Packed/encrypted region hints |
+| PE/ELF/Mach-O metadata | Static triage and capability clues |
+| JSON/CSV | Case notes and automation |
+| YARA scan results | Detection seed validation |
+
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)
 [![LIEF](https://img.shields.io/badge/LIEF-Parser-orange.svg)](https://lief.quarkslab.com/)
 
