@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "1200km-fileinfo"
+version = "1.0.0"
+description = "File metadata, hash, string, entropy, YARA, and static triage tool for malware analysis and forensics."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.8"
+authors = [
+    { name = "Andrey Pautov", email = "1200km@gmail.com" },
+]
+keywords = ["file-triage", "malware-analysis", "forensics", "metadata", "yara", "cti"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+]
+dependencies = [
+    "lief>=0.14.0",
+    "cryptography>=41.0.0",
+]
+
+[project.optional-dependencies]
+yara = ["yara-python"]
+ole = ["olefile"]
+malwarebazaar = ["requests", "pyzipper"]
+dev = ["pytest"]
+
+[project.urls]
+Homepage = "https://github.com/anpa1200/Basic-File-Information-Gathering-Script"
+Repository = "https://github.com/anpa1200/Basic-File-Information-Gathering-Script"
+Documentation = "https://medium.com/@1200km/one-tool-to-rule-them-all-file-metadata-static-analysis-for-malware-analysts-and-soc-teams-c6dba1f5b7de"
+Issues = "https://github.com/anpa1200/Basic-File-Information-Gathering-Script/issues"
+
+[project.scripts]
+fileinfo = "fileinfo:main"
+
+[tool.setuptools]
+py-modules = ["fileinfo", "static_analysis", "Basic_inf_gathering"]

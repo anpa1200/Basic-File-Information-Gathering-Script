@@ -65,6 +65,11 @@ Step-by-step guide with screenshots: installation, `fileinfo.py` vs `Basic_inf_g
 ### Installation
 
 ```bash
+# From PyPI
+pip install 1200km-fileinfo
+fileinfo /path/to/file.exe --json
+
+# From source
 git clone https://github.com/anpa1200/Basic-File-Information-Gathering-Script.git
 cd Basic-File-Information-Gathering-Script
 # On Debian/Ubuntu, ensure venv support: sudo apt install python3-venv
